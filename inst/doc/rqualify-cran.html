@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to the rqualify Package</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to the rqualify Package</h1>
+
+
+
+<div id="r-installation-iqoq" class="section level1">
+<h1>R Installation IQ/OQ</h1>
+<p>This vignette is an overview of the <code>R-validation.Rmd</code>
+file, showing what code is executed when the file is rendered. This
+overview is for informational purposes and documents the internal
+structure of the <code>R-validation.Rmd</code> file. If any of the code
+blocks are updated, this is not considered a breaking change as the
+document will still render properly.</p>
+<p>Please see <a href="https://medtronic-biostatistics.github.io/rqualify/index.html" class="uri">https://medtronic-biostatistics.github.io/rqualify/index.html</a>
+for the full documentation. Here is a minimal usage example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(rqualify)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Render the R-validation report, must have TinyTeX and Pandoc installed, </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># otherwise set setup_tinytex and setup_pandoc to TRUE.</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">rqualify</span>(<span class="at">path_save    =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>         <span class="at">setup_tinytex =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>         <span class="at">setup_pandoc  =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div id="r-validation.rmd-contents" class="section level2">
+<h2>R-validation.Rmd Contents</h2>
+<p>Below includes example output of installation facts, installation
+qualification, and operational qualification. The installation facts and
+qualification results are generated at the time of the package build or
+site build, while the operational qualification results were generated
+on a Windows machine with R version 4.5.1. Here, the code blocks are
+shown for informational purposes, the actual PDF report does not include
+the code blocks, only the results of each executed code block.</p>
+<div id="installation-qualification" class="section level3">
+<h3>Installation Qualification</h3>
+<p>First, some R installation facts are gathered and stored in
+variables. These variables are then used to populate the title page of
+the report with details about the R installation being qualified.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Get R installation facts</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>RVersionInfo <span class="ot">&lt;-</span> <span class="fu">R.Version</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Version      <span class="ot">&lt;-</span> RVersionInfo<span class="sc">$</span>version.string</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>Arch         <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;_&quot;</span>, <span class="st">&quot; &quot;</span>, RVersionInfo<span class="sc">$</span>arch)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>Platform     <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;_&quot;</span>, <span class="st">&quot; &quot;</span>, RVersionInfo<span class="sc">$</span>platform)</span></code></pre></div>
+<pre><code>R Version: R version 4.5.1 (2025-06-13 ucrt)
+
+Architecture: x86 64
+
+Platform: x86 64-w64-mingw32</code></pre>
+<hr />
+<p>The following is the output of <code>R.home()</code>, showing where R
+was installed on this computer:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>r_home <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">R.home</span>(), <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>C:/R/R-45~1.1</code></pre>
+<hr />
+<p>The following is the output of <code>system(&quot;R -e &#39;q()&#39;&quot;)</code>,
+presenting the R welcome banner as displayed from a default R console
+(terminal) to show the R console correctly running and then exiting:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Output the R startup banner</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>results0 <span class="ot">&lt;-</span> <span class="fu">try</span>(<span class="fu">system</span>(<span class="fu">paste</span>(<span class="fu">shQuote</span>(<span class="fu">file.path</span>(<span class="fu">R.home</span>(<span class="st">&quot;bin&quot;</span>), <span class="st">&quot;R&quot;</span>)), <span class="st">&quot;-e&quot;</span>, <span class="fu">shQuote</span>(<span class="st">&quot;q()&quot;</span>)), <span class="at">intern =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">class</span>(results0) <span class="sc">!=</span> <span class="st">&quot;try-error&quot;</span>){</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  results0 <span class="ot">&lt;-</span> <span class="fu">paste</span>(results0, <span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  results0 <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;&gt; q</span><span class="sc">\\</span><span class="st">(</span><span class="sc">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;&quot;</span>, results0)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>} <span class="cf">else</span>{</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  results0 <span class="ot">&lt;-</span> <span class="st">&quot;Unable to execute R at the command line&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.</code></pre>
+<hr />
+<p>The following is the output of <code>Sys.info()</code>, defining some
+details about the current system upon which R is running and user
+information:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Run Sys.info() at the command line</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>results_sysinfo <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> <span class="st">&quot;Sys.info()&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                             <span class="at">file_prefix   =</span> <span class="st">&quot;sysinfo&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>                             <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble and arrow)</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>results_sysinfo_clean <span class="ot">&lt;-</span> results_sysinfo[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_sysinfo <span class="sc">==</span> <span class="st">&quot;&gt; Sys.info()&quot;</span>)))]</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_sysinfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  results_sysinfo_clean <span class="ot">&lt;-</span> results_sysinfo_clean[<span class="sc">-</span><span class="fu">which</span>(results_sysinfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>       sysname        release        version       nodename        machine 
+     &quot;Windows&quot;       &quot;10 x64&quot;  &quot;build 26200&quot;      &quot;33NC3F3&quot;       &quot;x86-64&quot; 
+         login           user effective_user        udomain 
+     &quot;musgrd1&quot;      &quot;musgrd1&quot;      &quot;musgrd1&quot;          &quot;ENT&quot; </code></pre>
+<hr />
+<p>The following is the output of <code>.Platform</code>, defining some
+details of the platform upon which R was built (compiled):</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Run .Platform at the command line</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>results_platform <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> <span class="st">&quot;.Platform&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                              <span class="at">file_prefix   =</span> <span class="st">&quot;platform&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>                              <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>results_platform_clean <span class="ot">&lt;-</span> results_platform[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_platform <span class="sc">==</span> <span class="st">&quot;&gt; .Platform&quot;</span>)))]</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_platform_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  results_platform_clean <span class="ot">&lt;-</span> results_platform_clean[<span class="sc">-</span><span class="fu">which</span>(results_platform_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>$OS.type
+[1] &quot;windows&quot;
+
+$file.sep
+[1] &quot;/&quot;
+
+$dynlib.ext
+[1] &quot;.dll&quot;
+
+$GUI
+[1] &quot;RTerm&quot;
+
+$endian
+[1] &quot;little&quot;
+
+$pkgType
+[1] &quot;win.binary&quot;
+
+$path.sep
+[1] &quot;;&quot;
+
+$r_arch
+[1] &quot;x64&quot;</code></pre>
+<hr />
+<p>The following is the output of <code>R.version</code>, defining
+detailed information on the currently running version of R:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Run R.version at the command line</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>results_rversion <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> <span class="st">&quot;R.version&quot;</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>                              <span class="at">file_prefix   =</span> <span class="st">&quot;rversion&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>                              <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>results_rversion_clean <span class="ot">&lt;-</span> results_rversion[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_rversion <span class="sc">==</span> <span class="st">&quot;&gt; R.version&quot;</span>)))]</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_rversion_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  results_rversion_clean <span class="ot">&lt;-</span> results_rversion_clean[<span class="sc">-</span><span class="fu">which</span>(results_rversion_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>               _                                
+platform       x86_64-w64-mingw32               
+arch           x86_64                           
+os             mingw32                          
+crt            ucrt                             
+system         x86_64, mingw32                  
+status                                          
+major          4                                
+minor          5.1                              
+year           2025                             
+month          06                               
+day            13                               
+svn rev        88306                            
+language       R                                
+version.string R version 4.5.1 (2025-06-13 ucrt)
+nickname       Great Square Root                </code></pre>
+<hr />
+<p>The following is the output of <code>.Machine</code>, defining the
+numerical characteristics of the computer upon which R is running:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Run .Machine at the command line</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>results_machine <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> <span class="st">&quot;.Machine&quot;</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>                             <span class="at">file_prefix   =</span> <span class="st">&quot;machine&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>                             <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>results_machine_clean <span class="ot">&lt;-</span> results_machine[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_machine <span class="sc">==</span> <span class="st">&quot;&gt; .Machine&quot;</span>)))]</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_machine_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  results_machine_clean <span class="ot">&lt;-</span> results_machine_clean[<span class="sc">-</span><span class="fu">which</span>(results_machine_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>$double.eps
+[1] 2.220446e-16
+
+$double.neg.eps
+[1] 1.110223e-16
+
+$double.xmin
+[1] 2.225074e-308
+
+$double.xmax
+[1] 1.797693e+308
+
+$double.base
+[1] 2
+
+$double.digits
+[1] 53
+
+$double.rounding
+[1] 5
+
+$double.guard
+[1] 0
+
+$double.ulp.digits
+[1] -52
+
+$double.neg.ulp.digits
+[1] -53
+
+$double.exponent
+[1] 11
+
+$double.min.exp
+[1] -1022
+
+$double.max.exp
+[1] 1024
+
+$integer.max
+[1] 2147483647
+
+$sizeof.long
+[1] 4
+
+$sizeof.longlong
+[1] 8
+
+$sizeof.longdouble
+[1] 16
+
+$sizeof.pointer
+[1] 8
+
+$sizeof.time_t
+[1] 8
+
+$longdouble.eps
+[1] 1.084202e-19
+
+$longdouble.neg.eps
+[1] 5.421011e-20
+
+$longdouble.digits
+[1] 64
+
+$longdouble.rounding
+[1] 5
+
+$longdouble.guard
+[1] 0
+
+$longdouble.ulp.digits
+[1] -63
+
+$longdouble.neg.ulp.digits
+[1] -64
+
+$longdouble.exponent
+[1] 15
+
+$longdouble.min.exp
+[1] -16382
+
+$longdouble.max.exp
+[1] 16384</code></pre>
+<hr />
+<p>The following is the output of <code>sessionInfo()</code>, defining
+current R version, locale information and attached packages:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Run sessionInfo() at the command line</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>results_sessioninfo <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block   =</span> <span class="st">&quot;sessionInfo()&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>                                 <span class="at">file_prefix  =</span> <span class="st">&quot;sessioninfo&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>                                 <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>results_sessioninfo_clean <span class="ot">&lt;-</span> results_sessioninfo[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_sessioninfo <span class="sc">==</span> <span class="st">&quot;&gt; sessionInfo()&quot;</span>)))]</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_sessioninfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  results_sessioninfo_clean <span class="ot">&lt;-</span> results_sessioninfo_clean[<span class="sc">-</span><span class="fu">which</span>(results_sessioninfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>R version 4.5.1 (2025-06-13 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=C                          
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.5.1</code></pre>
+<hr />
+<p>The following is the output of <code>.libPaths()</code>, the current
+package library location; may be more than one folder:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>results_libpath <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block   =</span> <span class="st">&quot;.libPaths()&quot;</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>                             <span class="at">file_prefix  =</span> <span class="st">&quot;libpaths&quot;</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>                             <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>results_libpath_clean <span class="ot">&lt;-</span> results_libpath[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_libpath <span class="sc">==</span> <span class="st">&quot;&gt; .libPaths()&quot;</span>)))]</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_libpath_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>  results_libpath_clean <span class="ot">&lt;-</span> results_libpath_clean[<span class="sc">-</span><span class="fu">which</span>(results_libpath_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] &quot;C:/Users/musgrd1/AppData/Local/Temp/RtmpYhwxr3/Rinst2f74556a62a0&quot;      
+[2] &quot;C:/Users/musgrd1/AppData/Local/Temp/Rtmpecwoal/temp_libpath558830867fa&quot;
+[3] &quot;C:/R/R-4.5.1/library&quot;                                                  </code></pre>
+<hr />
+<p>The following is the output of
+<code>rmarkdown::pandoc_version()</code> listing the version of Pandoc
+used to render the report (note, if Pandoc is not installed, the output
+will indicate that Pandoc is not available):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="cf">if</span>(pandoc<span class="sc">::</span><span class="fu">pandoc_available</span>()){</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  results_pandoc_ver <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block   =</span> <span class="st">&quot;rmarkdown::pandoc_version()&quot;</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>                                  <span class="at">file_prefix  =</span> <span class="st">&quot;pandoc_ver&quot;</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>                                  <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  </span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  results_pandoc_ver_clean <span class="ot">&lt;-</span> results_pandoc_ver[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_pandoc_ver <span class="sc">==</span> <span class="st">&quot;&gt; rmarkdown::pandoc_version()&quot;</span>)))]</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>  </span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">any</span>(results_pandoc_ver_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>    results_pandoc_ver_clean <span class="ot">&lt;-</span> results_pandoc_ver_clean[<span class="sc">-</span><span class="fu">which</span>(results_pandoc_ver_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>  }</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>} <span class="cf">else</span>{</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>  results_pandoc_ver_clean <span class="ot">&lt;-</span> <span class="st">&quot;Pandoc not available&quot;</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] &#39;3.6.3&#39;</code></pre>
+<hr />
+<p>The following is the output of <code>tinytex::tlmgr_version()</code>
+listing the version and installation path of TinyTex used to render the
+report to pdf (note, if TinyTeX is not installed, the output will
+indicate that TinyTeX is not available):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="cf">if</span>(tinytex<span class="sc">::</span><span class="fu">is_tinytex</span>()){</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  results_tinytex_ver <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block   =</span> <span class="st">&quot;tinytex::tlmgr_version()&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>                                   <span class="at">file_prefix  =</span> <span class="st">&quot;tinytex_ver&quot;</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>                                   <span class="at">folder_output =</span> dir_temp)</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  </span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  <span class="co"># Clean-up the results (remove the unnecessary preamble)</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  results_tinytex_ver_clean <span class="ot">&lt;-</span> results_tinytex_ver[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">which</span>(results_tinytex_ver <span class="sc">==</span> <span class="st">&quot;&gt; tinytex::tlmgr_version()&quot;</span>)))]</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>  </span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">any</span>(results_tinytex_ver_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>    results_tinytex_ver_clean <span class="ot">&lt;-</span> results_tinytex_ver_clean[<span class="sc">-</span><span class="fu">which</span>(results_tinytex_ver_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  }</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>} <span class="cf">else</span>{</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>  results_tinytex_ver_clean <span class="ot">&lt;-</span> <span class="st">&quot;TinyTeX not available&quot;</span></span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>tlmgr revision 78301 (2026-03-07 18:41:28 +0100)
+tlmgr using installation: C:/Users/musgrd1/AppData/Roaming/TinyTeX
+TeX Live (https://tug.org/texlive) version 2026</code></pre>
+<hr />
+</div>
+<div id="operational-qualification" class="section level3">
+<h3>Operational Qualification</h3>
+<div id="r-core-operational-qualification---system-tests-oq" class="section level4">
+<h4>R Core Operational Qualification - System Tests (OQ)</h4>
+<p>The following is the output of
+<code>testInstalledBasic(&quot;both&quot;)</code>, which runs a series of core
+system-wide operational tests of the R installation, including various
+regression tests:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Copy system tests to IQ-OQ-TestOutput/tests</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>r_test_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">R.home</span>(), <span class="st">&quot;tests&quot;</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>fc          <span class="ot">&lt;-</span> <span class="fu">file.copy</span>(r_test_path, <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>, <span class="at">recursive=</span><span class="cn">TRUE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># Set absolute test path</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>path_system_tests <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="st">&quot;IQ-OQ-TestOutput/tests&quot;</span>, <span class="at">winslash=</span><span class="st">&quot;/&quot;</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>code_check1 <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&#39;</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledBasic(</span></span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="st">                    scope      = &quot;basic&quot;,</span></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="st">                    outDir     = &quot;%s&quot;,</span></span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="st">                    testSrcdir = &quot;%s&quot;</span></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="st">                    ),</span></span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a><span class="st">if (Failure){</span></span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile1Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a><span class="st">&#39;</span>,path_system_tests,path_system_tests)</span>
+<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a>results1 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check1,</span>
+<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile1&quot;</span>,</span>
+<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+running strict specific tests
+  running code in &#39;eval-etc.R&#39;
+  comparing &#39;eval-etc.Rout&#39; to &#39;eval-etc.Rout.save&#39; ... OK
+  running code in &#39;simple-true.R&#39;
+  comparing &#39;simple-true.Rout&#39; to &#39;simple-true.Rout.save&#39; ... OK
+  running code in &#39;arith-true.R&#39;
+  comparing &#39;arith-true.Rout&#39; to &#39;arith-true.Rout.save&#39; ... OK
+  running code in &#39;lm-tests.R&#39;
+  comparing &#39;lm-tests.Rout&#39; to &#39;lm-tests.Rout.save&#39; ... OK
+  running code in &#39;ok-errors.R&#39;
+  comparing &#39;ok-errors.Rout&#39; to &#39;ok-errors.Rout.save&#39; ... OK
+  running code in &#39;method-dispatch.R&#39;
+  comparing &#39;method-dispatch.Rout&#39; to &#39;method-dispatch.Rout.save&#39; ... OK
+  running code in &#39;array-subset.R&#39;
+  running code in &#39;p-r-random-tests.R&#39;
+  comparing &#39;p-r-random-tests.Rout&#39; to &#39;p-r-random-tests.Rout.save&#39; ... OK
+  running code in &#39;d-p-q-r-tst-2.R&#39;
+  running code in &#39;any-all.R&#39;
+  comparing &#39;any-all.Rout&#39; to &#39;any-all.Rout.save&#39; ... OK
+  running code in &#39;structure.R&#39;
+  comparing &#39;structure.Rout&#39; to &#39;structure.Rout.save&#39; ... OK
+  running code in &#39;d-p-q-r-tests.R&#39;
+  comparing &#39;d-p-q-r-tests.Rout&#39; to &#39;d-p-q-r-tests.Rout.save&#39; ... OK
+running sloppy specific tests
+  running code in &#39;complex.R&#39;
+  comparing &#39;complex.Rout&#39; to &#39;complex.Rout.save&#39; ... OK
+  running code in &#39;print-tests.R&#39;
+  comparing &#39;print-tests.Rout&#39; to &#39;print-tests.Rout.save&#39; ... OK
+  running code in &#39;lapack.R&#39;
+  comparing &#39;lapack.Rout&#39; to &#39;lapack.Rout.save&#39; ... OK
+  running code in &#39;datasets.R&#39;
+  comparing &#39;datasets.Rout&#39; to &#39;datasets.Rout.save&#39; ... OK
+  running code in &#39;datetime.R&#39;
+  comparing &#39;datetime.Rout&#39; to &#39;datetime.Rout.save&#39; ... OK
+  running code in &#39;iec60559.R&#39;
+  comparing &#39;iec60559.Rout&#39; to &#39;iec60559.Rout.save&#39; ... OK
+running regression tests
+  running code in &#39;reg-tests-1a.R&#39;
+  running code in &#39;reg-tests-1b.R&#39;
+  running code in &#39;reg-tests-1c.R&#39;
+  running code in &#39;reg-tests-1d.R&#39;
+  running code in &#39;reg-tests-1e.R&#39;
+  running code in &#39;reg-tests-2.R&#39;
+  comparing &#39;reg-tests-2.Rout&#39; to &#39;reg-tests-2.Rout.save&#39; ... OK
+  running code in &#39;reg-examples1.R&#39;
+  running code in &#39;reg-examples2.R&#39;
+  running code in &#39;reg-packages.R&#39;
+  running code in &#39;reg-S4-examples.R&#39;
+  running code in &#39;classes-methods.R&#39;
+  running code in &#39;datetime3.R&#39;
+  running code in &#39;p-qbeta-strict-tst.R&#39;
+  running code in &#39;reg-IO.R&#39;
+  comparing &#39;reg-IO.Rout&#39; to &#39;reg-IO.Rout.save&#39; ... OK
+  running code in &#39;reg-IO2.R&#39;
+  comparing &#39;reg-IO2.Rout&#39; to &#39;reg-IO2.Rout.save&#39; ... OK
+  running code in &#39;reg-plot.R&#39;
+  comparing &#39;reg-plot.pdf&#39; to &#39;reg-plot.pdf.save&#39; ... OK
+  running code in &#39;reg-S4.R&#39;
+  comparing &#39;reg-S4.Rout&#39; to &#39;reg-S4.Rout.save&#39; ... OK
+  running code in &#39;reg-BLAS.R&#39;
+  running code in &#39;reg-encodings.R&#39;
+  running code in &#39;reg-translation.R&#39;
+  running code in &#39;reg-tests-3.R&#39;
+  comparing &#39;reg-tests-3.Rout&#39; to &#39;reg-tests-3.Rout.save&#39; ... OK
+  running code in &#39;reg-examples3.R&#39;
+  comparing &#39;reg-examples3.Rout&#39; to &#39;reg-examples3.Rout.save&#39; ... OK
+running tests of plotting Latin-1
+  expect failure or some differences if not in a Latin or UTF-8 locale
+  running code in &#39;reg-plot-latin1.R&#39;
+  comparing &#39;reg-plot-latin1.pdf&#39; to &#39;reg-plot-latin1.pdf.save&#39; ...OK
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-base-package-operational-qualification---package-examples-oq" class="section level4">
+<h4>R Base Package Operational Qualification - Package Examples
+(OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;examples&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Base package code
+examples:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>code_check2 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;examples&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="st">if (Failure) {</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile2Fail&quot;)</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>results2 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check2,</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile2&quot;</span>,</span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Testing examples for package &#39;base&#39;
+Testing examples for package &#39;tools&#39;
+  comparing &#39;tools-Ex.Rout&#39; to &#39;tools-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;utils&#39;
+Testing examples for package &#39;grDevices&#39;
+  comparing &#39;grDevices-Ex.Rout&#39; to &#39;grDevices-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;graphics&#39;
+  comparing &#39;graphics-Ex.Rout&#39; to &#39;graphics-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;stats&#39;
+  comparing &#39;stats-Ex.Rout&#39; to &#39;stats-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;datasets&#39;
+  comparing &#39;datasets-Ex.Rout&#39; to &#39;datasets-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;methods&#39;
+Testing examples for package &#39;grid&#39;
+  comparing &#39;grid-Ex.Rout&#39; to &#39;grid-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;splines&#39;
+  comparing &#39;splines-Ex.Rout&#39; to &#39;splines-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;stats4&#39;
+  comparing &#39;stats4-Ex.Rout&#39; to &#39;stats4-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;tcltk&#39;
+Testing examples for package &#39;compiler&#39;
+Testing examples for package &#39;parallel&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-base-package-operational-qualification---package-vignettes-oq" class="section level4">
+<h4>R Base Package Operational Qualification - Package Vignettes
+(OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;vignettes&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Base package vignette
+code examples:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>code_check3 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;vignettes&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="st">if (Failure) {</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile3Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>results3 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check3,</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile3&quot;</span>,</span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Running vignettes for package &#39;utils&#39;
+  Running &#39;Sweave.Rnw&#39;
+Running vignettes for package &#39;stats&#39;
+  Running &#39;reshape.Rnw&#39;
+Running vignettes for package &#39;grid&#39;
+  Running &#39;displaylist.Rnw&#39;
+  Running &#39;frame.Rnw&#39;
+  Running &#39;grid.Rnw&#39;
+  Running &#39;grobs.Rnw&#39;
+  Running &#39;interactive.Rnw&#39;
+  Running &#39;locndimn.Rnw&#39;
+  Running &#39;moveline.Rnw&#39;
+  Running &#39;nonfinite.Rnw&#39;
+  Running &#39;plotexample.Rnw&#39;
+  Running &#39;rotated.Rnw&#39;
+  Running &#39;saveload.Rnw&#39;
+  Running &#39;sharing.Rnw&#39;
+  Running &#39;viewports.Rnw&#39;
+Running vignettes for package &#39;parallel&#39;
+  Running &#39;parallel.Rnw&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-recommended-package-operational-qualification---package-examples-oq" class="section level4">
+<h4>R Recommended Package Operational Qualification - Package Examples
+(OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;examples&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Recommended package
+code examples:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>code_check4 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;examples&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="st">if (Failure){</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile4Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>results4 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check4,</span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile4&quot;</span>,</span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Testing examples for package &#39;MASS&#39;
+  comparing &#39;MASS-Ex.Rout&#39; to &#39;MASS-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;lattice&#39;
+Testing examples for package &#39;Matrix&#39;
+Testing examples for package &#39;nlme&#39;
+Testing examples for package &#39;survival&#39;
+  comparing &#39;survival-Ex.Rout&#39; to &#39;survival-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;boot&#39;
+  comparing &#39;boot-Ex.Rout&#39; to &#39;boot-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;cluster&#39;
+Testing examples for package &#39;codetools&#39;
+Testing examples for package &#39;foreign&#39;
+Testing examples for package &#39;KernSmooth&#39;
+Testing examples for package &#39;rpart&#39;
+  comparing &#39;rpart-Ex.Rout&#39; to &#39;rpart-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;class&#39;
+Testing examples for package &#39;nnet&#39;
+Testing examples for package &#39;spatial&#39;
+  comparing &#39;spatial-Ex.Rout&#39; to &#39;spatial-Ex.Rout.save&#39; ... OK
+Testing examples for package &#39;mgcv&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-recommended-package-operational-qualification---package-vignettes-oq" class="section level4">
+<h4>R Recommended Package Operational Qualification - Package Vignettes
+(OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;vignettes&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Recommended package
+vignette code examples:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>code_check5 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;vignettes&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="st">if (Failure){</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile5Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a>results5 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check5,</span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile5&quot;</span>,</span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Running vignettes for package &#39;lattice&#39;
+  Running &#39;grid.Rnw&#39;
+Running vignettes for package &#39;Matrix&#39;
+  Running &#39;Comparisons.Rnw&#39;
+  Running &#39;Design-issues.Rnw&#39;
+  Running &#39;Intro2Matrix.Rnw&#39;
+  Running &#39;Introduction.Rnw&#39;
+  Running &#39;sparseModels.Rnw&#39;
+Running vignettes for package &#39;survival&#39;
+  Running &#39;adjcurve.Rnw&#39;
+  Running &#39;approximate.Rnw&#39;
+  Running &#39;compete.Rnw&#39;
+  Running &#39;concordance.Rnw&#39;
+  Running &#39;matrix.Rnw&#39;
+  Running &#39;methods.Rnw&#39;
+  Running &#39;multi.Rnw&#39;
+  Running &#39;other.Rnw&#39;
+  Running &#39;population.Rnw&#39;
+  Running &#39;redistribute.Rnw&#39;
+  Running &#39;splines.Rnw&#39;
+  Running &#39;survival.Rnw&#39;
+  Running &#39;tiedtimes.Rnw&#39;
+  Running &#39;timedep.Rnw&#39;
+  Running &#39;validate.Rnw&#39;
+Running vignettes for package &#39;rpart&#39;
+  Running &#39;longintro.Rnw&#39;
+  Running &#39;usercode.Rnw&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-base-package-operational-qualification---package-tests-oq" class="section level4">
+<h4>R Base Package Operational Qualification - Package Tests (OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;tests&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Base package code
+tests:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>code_check6 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;base&quot;, types = &quot;tests&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a><span class="st">if (Failure){</span></span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile6Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb34-14"><a href="#cb34-14" tabindex="-1"></a>results6 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check6,</span>
+<span id="cb34-15"><a href="#cb34-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile6&quot;</span>,</span>
+<span id="cb34-16"><a href="#cb34-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Running specific tests for package &#39;tools&#39;
+  Running &#39;hashes.R&#39;
+  Running &#39;QC.R&#39;
+  Running &#39;Rd.R&#39;
+  Running &#39;Rd2HTML.R&#39;
+  Running &#39;Rd2pdf.R&#39;
+  Running &#39;S3.R&#39;
+  Running &#39;undoc.R&#39;
+Running specific tests for package &#39;utils&#39;
+  Running &#39;charclass.R&#39;
+  Running &#39;completion.R&#39;
+  Running &#39;relist.R&#39;
+  Running &#39;Sweave-tst.R&#39;
+  Running &#39;tar.R&#39;
+Running specific tests for package &#39;grDevices&#39;
+  Running &#39;convertColor-tests.R&#39;
+  Running &#39;encodings.R&#39;
+  comparing &#39;encodings.Rout&#39; to &#39;encodings.Rout.save&#39; ... OK
+  Running &#39;encodings2.R&#39;
+  comparing &#39;encodings2.Rout&#39; to &#39;encodings2.Rout.save&#39; ... OK
+  Running &#39;encodings3.R&#39;
+  comparing &#39;encodings3.Rout&#39; to &#39;encodings3.Rout.save&#39; ... OK
+  Running &#39;grDev-tsts.R&#39;
+  Running &#39;palettes-tests.R&#39;
+  Running &#39;ps-tests.R&#39;
+  comparing &#39;ps-tests.Rout&#39; to &#39;ps-tests.Rout.save&#39; ... OK
+  Running &#39;saved-recordPlot.R&#39;
+  Running &#39;urw-fonts.R&#39;
+  Running &#39;xyTable.R&#39;
+  comparing &#39;xyTable.Rout&#39; to &#39;xyTable.Rout.save&#39; ... OK
+  Running &#39;zzcheck-encodings.R&#39;
+Running specific tests for package &#39;stats&#39;
+  Running &#39;arimaML.R&#39;
+  Running &#39;bandwidth.R&#39;
+  comparing &#39;bandwidth.Rout&#39; to &#39;bandwidth.Rout.save&#39; ... OK
+  Running &#39;cmdscale.R&#39;
+  Running &#39;density_chk.R&#39;
+  Running &#39;dpq-xtra.R&#39;
+  Running &#39;drop1-polr.R&#39;
+  Running &#39;factanal-tst.R&#39;
+  Running &#39;glm-etc.R&#39;
+  Running &#39;glm.R&#39;
+  comparing &#39;glm.Rout&#39; to &#39;glm.Rout.save&#39; ... OK
+  Running &#39;ig_glm.R&#39;
+  Running &#39;ks-test.R&#39;
+  comparing &#39;ks-test.Rout&#39; to &#39;ks-test.Rout.save&#39; ... OK
+  Running &#39;loglin.R&#39;
+  comparing &#39;loglin.Rout&#39; to &#39;loglin.Rout.save&#39; ... OK
+  Running &#39;nafns.R&#39;
+  Running &#39;nlm.R&#39;
+  Running &#39;nls.R&#39;
+  comparing &#39;nls.Rout&#39; to &#39;nls.Rout.save&#39; ... OK
+  Running &#39;NLSstClosest.R&#39;
+  Running &#39;offsets.R&#39;
+  Running &#39;ppr.R&#39;
+  Running &#39;psmirnov.R&#39;
+  comparing &#39;psmirnov.Rout&#39; to &#39;psmirnov.Rout.save&#39; ... OK
+  Running &#39;simulate.R&#39;
+  comparing &#39;simulate.Rout&#39; to &#39;simulate.Rout.save&#39; ... OK
+  Running &#39;smooth.spline.R&#39;
+  Running &#39;table-margins.R&#39;
+  Running &#39;ts-tests.R&#39;
+Running specific tests for package &#39;methods&#39;
+  Running &#39;basicRefClass.R&#39;
+  Running &#39;duplicateClass.R&#39;
+  Running &#39;envRefClass.R&#39;
+  Running &#39;fieldAssignments.R&#39;
+  Running &#39;mixinInitialize.R&#39;
+  Running &#39;namesAndSlots.R&#39;
+  Running &#39;nextWithDots.R&#39;
+  Running &#39;refClassExample.R&#39;
+  Running &#39;S3.R&#39;
+  Running &#39;testConditionalIs.R&#39;
+  Running &#39;testGroupGeneric.R&#39;
+  Running &#39;testIs.R&#39;
+Running specific tests for package &#39;grid&#39;
+  Running &#39;bugs.R&#39;
+  Running &#39;clippaths.R&#39;
+  Running &#39;compositing.R&#39;
+  Running &#39;coords.R&#39;
+  Running &#39;glyphs.R&#39;
+  Running &#39;grep.R&#39;
+  comparing &#39;grep.Rout&#39; to &#39;grep.Rout.save&#39; ... OK
+  Running &#39;groups.R&#39;
+  Running &#39;masks.R&#39;
+  Running &#39;nesting.R&#39;
+  Running &#39;paths.R&#39;
+  Running &#39;patterns.R&#39;
+  Running &#39;reg.R&#39;
+  Running &#39;testls.R&#39;
+  comparing &#39;testls.Rout&#39; to &#39;testls.Rout.save&#39; ... OK
+  Running &#39;units.R&#39;
+Running specific tests for package &#39;splines&#39;
+  Running &#39;sparse-tst.R&#39;
+  Running &#39;spline-tst.R&#39;
+Running specific tests for package &#39;stats4&#39;
+  Running &#39;confint.R&#39;
+Running specific tests for package &#39;compiler&#39;
+  Running &#39;assign.R&#39;
+  Running &#39;basics.R&#39;
+  Running &#39;const.R&#39;
+  Running &#39;curexpr.R&#39;
+  Running &#39;envir.R&#39;
+  Running &#39;jit.R&#39;
+  Running &#39;loop.R&#39;
+  Running &#39;srcref.R&#39;
+  Running &#39;switch.R&#39;
+  Running &#39;vischk.R&#39;
+Running specific tests for package &#39;parallel&#39;
+  Running &#39;Master.R&#39;
+  Running &#39;RSeed.R&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+<hr />
+</div>
+<div id="r-recommended-package-operational-qualification---package-tests-oq" class="section level4">
+<h4>R Recommended Package Operational Qualification - Package Tests
+(OQ)</h4>
+<p>The following is the output of
+<code>testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;tests&quot;, errorsAreFatal = FALSE)</code>,
+which runs a series of operational tests of the R Recommended package
+code tests:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>code_check7 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="st">options(echo = FALSE)</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="st">options(useFancyQuotes = FALSE)</span></span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="st">Failure &lt;- tryCatch(tools:::testInstalledPackages(outDir = &quot;IQ-OQ-TestOutput&quot;, scope = &quot;recommended&quot;, types = &quot;tests&quot;, errorsAreFatal = FALSE),</span></span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a><span class="st">                    error=function(e) TRUE)</span></span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a><span class="st">if (Failure){</span></span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: FAIL</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a><span class="st">  fc &lt;- file.create(&quot;IQ-OQ-TestOutput/CMDFile7Fail&quot;, showWarnings = FALSE)</span></span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a><span class="st">} else {</span></span>
+<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a><span class="st">  cat(&quot;</span><span class="sc">\n\n</span><span class="st">Test suite result: PASS</span><span class="sc">\n\n</span><span class="st">&quot;)</span></span>
+<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb36-12"><a href="#cb36-12" tabindex="-1"></a><span class="st">q(status = Failure)</span></span>
+<span id="cb36-13"><a href="#cb36-13" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb36-14"><a href="#cb36-14" tabindex="-1"></a>results7 <span class="ot">&lt;-</span> <span class="fu">code_exec</span>(<span class="at">code_block    =</span> code_check7,</span>
+<span id="cb36-15"><a href="#cb36-15" tabindex="-1"></a>                      <span class="at">file_prefix   =</span> <span class="st">&quot;CMDFile7&quot;</span>,</span>
+<span id="cb36-16"><a href="#cb36-16" tabindex="-1"></a>                      <span class="at">folder_output =</span> <span class="st">&quot;IQ-OQ-TestOutput&quot;</span>)</span></code></pre></div>
+<pre><code>
+R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+
+&gt; 
+&gt; options(echo = FALSE)
+Running specific tests for package &#39;MASS&#39;
+  Running &#39;confint.R&#39;
+  Running &#39;cov.mcd.R&#39;
+  Running &#39;fitdistr.R&#39;
+  comparing &#39;fitdistr.Rout&#39; to &#39;fitdistr.Rout.save&#39; ... OK
+  Running &#39;glm.nb.R&#39;
+  Running &#39;glmmPQL.R&#39;
+  Running &#39;hubers.R&#39;
+  Running &#39;lme.R&#39;
+  Running &#39;loglm.R&#39;
+  Running &#39;polr.R&#39;
+  Running &#39;profile.R&#39;
+  Running &#39;regression.R&#39;
+  comparing &#39;regression.Rout&#39; to &#39;regression.Rout.save&#39; ... OK
+  Running &#39;rlm.R&#39;
+  Running &#39;scripts.R&#39;
+Running specific tests for package &#39;lattice&#39;
+  Running &#39;auto-key.R&#39;
+  Running &#39;barchart-width.R&#39;
+  Running &#39;call.R&#39;
+  Running &#39;colorkey-title.R&#39;
+  Running &#39;dataframe-methods.R&#39;
+  Running &#39;dates.R&#39;
+  Running &#39;dotplotscoping.R&#39;
+  Running &#39;fontsize.R&#39;
+  Running &#39;levelplot.R&#39;
+  Running &#39;MASSch04.R&#39;
+  Running &#39;scales.R&#39;
+  Running &#39;shade-wireframe.R&#39;
+  Running &#39;summary.R&#39;
+  Running &#39;temp.R&#39;
+  Running &#39;test.R&#39;
+  Running &#39;wireframe.R&#39;
+Running specific tests for package &#39;Matrix&#39;
+  Running &#39;abIndex-tsts.R&#39;
+  Running &#39;base-matrix-fun.R&#39;
+  Running &#39;bind.R&#39;
+  comparing &#39;bind.Rout&#39; to &#39;bind.Rout.save&#39; ... OK
+  Running &#39;Class+Meth.R&#39;
+  Running &#39;dg_Matrix.R&#39;
+  Running &#39;dpo-test.R&#39;
+  Running &#39;dtpMatrix.R&#39;
+  Running &#39;factorizing.R&#39;
+  Running &#39;group-methods.R&#39;
+  Running &#39;indexing.R&#39;
+  comparing &#39;indexing.Rout&#39; to &#39;indexing.Rout.save&#39; ...30,31d29
+&lt; Warning in Sys.setLanguage(&quot;en&quot;) :
+&lt;   no natural language support or missing translations
+  Running &#39;matprod.R&#39;
+  Running &#39;matr-exp.R&#39;
+  Running &#39;other-pkgs.R&#39;
+  Running &#39;packed-unpacked.R&#39;
+  Running &#39;Simple.R&#39;
+  Running &#39;spModel.matrix.R&#39;
+  Running &#39;symmDN.R&#39;
+  Running &#39;validObj.R&#39;
+  Running &#39;write-read.R&#39;
+Running specific tests for package &#39;nlme&#39;
+  Running &#39;anova.gls.R&#39;
+  Running &#39;augPred_lab.R&#39;
+  Running &#39;augPredmissing.R&#39;
+  Running &#39;coef.R&#39;
+  comparing &#39;coef.Rout&#39; to &#39;coef.Rout.save&#39; ... OK
+  Running &#39;contrMat.R&#39;
+  Running &#39;corMatrix.R&#39;
+  Running &#39;corStruct.R&#39;
+  Running &#39;data.frame.R&#39;
+  Running &#39;deparse.R&#39;
+  Running &#39;deviance.R&#39;
+  Running &#39;fitted.R&#39;
+  Running &#39;getData.R&#39;
+  Running &#39;getVarCov.R&#39;
+  Running &#39;gls.R&#39;
+  Running &#39;gnls-ch8.R&#39;
+  Running &#39;lme.R&#39;
+  comparing &#39;lme.Rout&#39; to &#39;lme.Rout.save&#39; ... OK
+  Running &#39;lmList.R&#39;
+  Running &#39;missing.R&#39;
+  comparing &#39;missing.Rout&#39; to &#39;missing.Rout.save&#39; ... OK
+  Running &#39;nlme.R&#39;
+  Running &#39;nlme2.R&#39;
+  Running &#39;predict.lme.R&#39;
+  Running &#39;scoping.R&#39;
+  Running &#39;sigma-fixed-etc.R&#39;
+  Running &#39;updateLme.R&#39;
+  Running &#39;varConstProp.R&#39;
+  Running &#39;varFixed.R&#39;
+  Running &#39;varIdent.R&#39;
+Running specific tests for package &#39;survival&#39;
+  Running &#39;aareg.R&#39;
+  comparing &#39;aareg.Rout&#39; to &#39;aareg.Rout.save&#39; ... OK
+  Running &#39;anova.R&#39;
+  comparing &#39;anova.Rout&#39; to &#39;anova.Rout.save&#39; ... OK
+  Running &#39;bladder.R&#39;
+  comparing &#39;bladder.Rout&#39; to &#39;bladder.Rout.save&#39; ... OK
+  Running &#39;book1.R&#39;
+  comparing &#39;book1.Rout&#39; to &#39;book1.Rout.save&#39; ... OK
+  Running &#39;book2.R&#39;
+  comparing &#39;book2.Rout&#39; to &#39;book2.Rout.save&#39; ... OK
+  Running &#39;book3.R&#39;
+  comparing &#39;book3.Rout&#39; to &#39;book3.Rout.save&#39; ... OK
+  Running &#39;book4.R&#39;
+  comparing &#39;book4.Rout&#39; to &#39;book4.Rout.save&#39; ... OK
+  Running &#39;book5.R&#39;
+  comparing &#39;book5.Rout&#39; to &#39;book5.Rout.save&#39; ... OK
+  Running &#39;book6.R&#39;
+  comparing &#39;book6.Rout&#39; to &#39;book6.Rout.save&#39; ... OK
+  Running &#39;book7.R&#39;
+  comparing &#39;book7.Rout&#39; to &#39;book7.Rout.save&#39; ... OK
+  Running &#39;brier.R&#39;
+  comparing &#39;brier.Rout&#39; to &#39;brier.Rout.save&#39; ... OK
+  Running &#39;cancer.R&#39;
+  comparing &#39;cancer.Rout&#39; to &#39;cancer.Rout.save&#39; ... OK
+  Running &#39;checkSurv2.R&#39;
+  comparing &#39;checkSurv2.Rout&#39; to &#39;checkSurv2.Rout.save&#39; ... OK
+  Running &#39;clogit.R&#39;
+  comparing &#39;clogit.Rout&#39; to &#39;clogit.Rout.save&#39; ... OK
+  Running &#39;concordance.R&#39;
+  comparing &#39;concordance.Rout&#39; to &#39;concordance.Rout.save&#39; ... OK
+  Running &#39;concordance2.R&#39;
+  comparing &#39;concordance2.Rout&#39; to &#39;concordance2.Rout.save&#39; ... OK
+  Running &#39;concordance3.R&#39;
+  comparing &#39;concordance3.Rout&#39; to &#39;concordance3.Rout.save&#39; ... OK
+  Running &#39;counting.R&#39;
+  comparing &#39;counting.Rout&#39; to &#39;counting.Rout.save&#39; ... OK
+  Running &#39;coxsurv.R&#39;
+  comparing &#39;coxsurv.Rout&#39; to &#39;coxsurv.Rout.save&#39; ... OK
+  Running &#39;coxsurv2.R&#39;
+  comparing &#39;coxsurv2.Rout&#39; to &#39;coxsurv2.Rout.save&#39; ... OK
+  Running &#39;coxsurv3.R&#39;
+  comparing &#39;coxsurv3.Rout&#39; to &#39;coxsurv3.Rout.save&#39; ... OK
+  Running &#39;coxsurv4.R&#39;
+  comparing &#39;coxsurv4.Rout&#39; to &#39;coxsurv4.Rout.save&#39; ... OK
+  Running &#39;coxsurv5.R&#39;
+  comparing &#39;coxsurv5.Rout&#39; to &#39;coxsurv5.Rout.save&#39; ... OK
+  Running &#39;coxsurv6.R&#39;
+  comparing &#39;coxsurv6.Rout&#39; to &#39;coxsurv6.Rout.save&#39; ... OK
+  Running &#39;detail.R&#39;
+  comparing &#39;detail.Rout&#39; to &#39;detail.Rout.save&#39; ... OK
+  Running &#39;difftest.R&#39;
+  comparing &#39;difftest.Rout&#39; to &#39;difftest.Rout.save&#39; ... OK
+  Running &#39;doaml.R&#39;
+  comparing &#39;doaml.Rout&#39; to &#39;doaml.Rout.save&#39; ... OK
+  Running &#39;doublecolon.R&#39;
+  comparing &#39;doublecolon.Rout&#39; to &#39;doublecolon.Rout.save&#39; ... OK
+  Running &#39;doweight.R&#39;
+  comparing &#39;doweight.Rout&#39; to &#39;doweight.Rout.save&#39; ... OK
+  Running &#39;dropspecial.R&#39;
+  comparing &#39;dropspecial.Rout&#39; to &#39;dropspecial.Rout.save&#39; ... OK
+  Running &#39;ekm.R&#39;
+  comparing &#39;ekm.Rout&#39; to &#39;ekm.Rout.save&#39; ... OK
+  Running &#39;expected.R&#39;
+  comparing &#39;expected.Rout&#39; to &#39;expected.Rout.save&#39; ... OK
+  Running &#39;expected2.R&#39;
+  comparing &#39;expected2.Rout&#39; to &#39;expected2.Rout.save&#39; ... OK
+  Running &#39;factor.R&#39;
+  comparing &#39;factor.Rout&#39; to &#39;factor.Rout.save&#39; ... OK
+  Running &#39;factor2.R&#39;
+  comparing &#39;factor2.Rout&#39; to &#39;factor2.Rout.save&#39; ... OK
+  Running &#39;finegray.R&#39;
+  comparing &#39;finegray.Rout&#39; to &#39;finegray.Rout.save&#39; ... OK
+  Running &#39;fr_cancer.R&#39;
+  comparing &#39;fr_cancer.Rout&#39; to &#39;fr_cancer.Rout.save&#39; ... OK
+  Running &#39;fr_kidney.R&#39;
+  comparing &#39;fr_kidney.Rout&#39; to &#39;fr_kidney.Rout.save&#39; ... OK
+  Running &#39;fr_lung.R&#39;
+  comparing &#39;fr_lung.Rout&#39; to &#39;fr_lung.Rout.save&#39; ... OK
+  Running &#39;fr_ovarian.R&#39;
+  comparing &#39;fr_ovarian.Rout&#39; to &#39;fr_ovarian.Rout.save&#39; ... OK
+  Running &#39;fr_rat1.R&#39;
+  comparing &#39;fr_rat1.Rout&#39; to &#39;fr_rat1.Rout.save&#39; ... OK
+  Running &#39;fr_resid.R&#39;
+  comparing &#39;fr_resid.Rout&#39; to &#39;fr_resid.Rout.save&#39; ... OK
+  Running &#39;fr_simple.R&#39;
+  comparing &#39;fr_simple.Rout&#39; to &#39;fr_simple.Rout.save&#39; ... OK
+  Running &#39;frailty.R&#39;
+  comparing &#39;frailty.Rout&#39; to &#39;frailty.Rout.save&#39; ... OK
+  Running &#39;frank.R&#39;
+  comparing &#39;frank.Rout&#39; to &#39;frank.Rout.save&#39; ... OK
+  Running &#39;infcox.R&#39;
+  comparing &#39;infcox.Rout&#39; to &#39;infcox.Rout.save&#39; ... OK
+  Running &#39;jasa.R&#39;
+  comparing &#39;jasa.Rout&#39; to &#39;jasa.Rout.save&#39; ... OK
+  Running &#39;model.matrix.R&#39;
+  comparing &#39;model.matrix.Rout&#39; to &#39;model.matrix.Rout.save&#39; ... OK
+  Running &#39;mstate.R&#39;
+  comparing &#39;mstate.Rout&#39; to &#39;mstate.Rout.save&#39; ... OK
+  Running &#39;mstate2.R&#39;
+  comparing &#39;mstate2.Rout&#39; to &#39;mstate2.Rout.save&#39; ... OK
+  Running &#39;mstrata.R&#39;
+  comparing &#39;mstrata.Rout&#39; to &#39;mstrata.Rout.save&#39; ... OK
+  Running &#39;multi2.R&#39;
+  comparing &#39;multi2.Rout&#39; to &#39;multi2.Rout.save&#39; ... OK
+  Running &#39;multi3.R&#39;
+  comparing &#39;multi3.Rout&#39; to &#39;multi3.Rout.save&#39; ... OK
+  Running &#39;multistate.R&#39;
+  comparing &#39;multistate.Rout&#39; to &#39;multistate.Rout.save&#39; ... OK
+  Running &#39;neardate.R&#39;
+  comparing &#39;neardate.Rout&#39; to &#39;neardate.Rout.save&#39; ... OK
+  Running &#39;nested.R&#39;
+  comparing &#39;nested.Rout&#39; to &#39;nested.Rout.save&#39; ... OK
+  Running &#39;nsk.R&#39;
+  comparing &#39;nsk.Rout&#39; to &#39;nsk.Rout.save&#39; ... OK
+  Running &#39;ovarian.R&#39;
+  comparing &#39;ovarian.Rout&#39; to &#39;ovarian.Rout.save&#39; ... OK
+  Running &#39;overlap.R&#39;
+  comparing &#39;overlap.Rout&#39; to &#39;overlap.Rout.save&#39; ... OK
+  Running &#39;prednew.R&#39;
+  comparing &#39;prednew.Rout&#39; to &#39;prednew.Rout.save&#39; ... OK
+  Running &#39;predsurv.R&#39;
+  comparing &#39;predsurv.Rout&#39; to &#39;predsurv.Rout.save&#39; ... OK
+  Running &#39;pseudo.R&#39;
+  comparing &#39;pseudo.Rout&#39; to &#39;pseudo.Rout.save&#39; ... OK
+  Running &#39;pspline.R&#39;
+  comparing &#39;pspline.Rout&#39; to &#39;pspline.Rout.save&#39; ... OK
+  Running &#39;pyear.R&#39;
+  comparing &#39;pyear.Rout&#39; to &#39;pyear.Rout.save&#39; ... OK
+  Running &#39;quantile.R&#39;
+  comparing &#39;quantile.Rout&#39; to &#39;quantile.Rout.save&#39; ... OK
+  Running &#39;r_lung.R&#39;
+  comparing &#39;r_lung.Rout&#39; to &#39;r_lung.Rout.save&#39; ... OK
+  Running &#39;r_resid.R&#39;
+  comparing &#39;r_resid.Rout&#39; to &#39;r_resid.Rout.save&#39; ... OK
+  Running &#39;r_sas.R&#39;
+  comparing &#39;r_sas.Rout&#39; to &#39;r_sas.Rout.save&#39; ... OK
+  Running &#39;r_scale.R&#39;
+  comparing &#39;r_scale.Rout&#39; to &#39;r_scale.Rout.save&#39; ... OK
+  Running &#39;r_stanford.R&#39;
+  comparing &#39;r_stanford.Rout&#39; to &#39;r_stanford.Rout.save&#39; ... OK
+  Running &#39;r_strata.R&#39;
+  comparing &#39;r_strata.Rout&#39; to &#39;r_strata.Rout.save&#39; ... OK
+  Running &#39;r_tdist.R&#39;
+  comparing &#39;r_tdist.Rout&#39; to &#39;r_tdist.Rout.save&#39; ... OK
+  Running &#39;r_user.R&#39;
+  comparing &#39;r_user.Rout&#39; to &#39;r_user.Rout.save&#39; ... OK
+  Running &#39;ratetable.R&#39;
+  comparing &#39;ratetable.Rout&#39; to &#39;ratetable.Rout.save&#39; ... OK
+  Running &#39;residsf.R&#39;
+  comparing &#39;residsf.Rout&#39; to &#39;residsf.Rout.save&#39; ... OK
+  Running &#39;royston.R&#39;
+  comparing &#39;royston.Rout&#39; to &#39;royston.Rout.save&#39; ... OK
+  Running &#39;rttright.R&#39;
+  comparing &#39;rttright.Rout&#39; to &#39;rttright.Rout.save&#39; ... OK
+  Running &#39;singtest.R&#39;
+  comparing &#39;singtest.Rout&#39; to &#39;singtest.Rout.save&#39; ... OK
+  Running &#39;strata2.R&#39;
+  comparing &#39;strata2.Rout&#39; to &#39;strata2.Rout.save&#39; ... OK
+  Running &#39;stratatest.R&#39;
+  comparing &#39;stratatest.Rout&#39; to &#39;stratatest.Rout.save&#39; ... OK
+  Running &#39;summary_survfit.R&#39;
+  comparing &#39;summary_survfit.Rout&#39; to &#39;summary_survfit.Rout.save&#39; ... OK
+  Running &#39;surv.R&#39;
+  comparing &#39;surv.Rout&#39; to &#39;surv.Rout.save&#39; ... OK
+  Running &#39;survcheck.R&#39;
+  comparing &#39;survcheck.Rout&#39; to &#39;survcheck.Rout.save&#39; ... OK
+  Running &#39;survfit1.R&#39;
+  comparing &#39;survfit1.Rout&#39; to &#39;survfit1.Rout.save&#39; ... OK
+  Running &#39;survfit2.R&#39;
+  comparing &#39;survfit2.Rout&#39; to &#39;survfit2.Rout.save&#39; ... OK
+  Running &#39;survreg1.R&#39;
+  comparing &#39;survreg1.Rout&#39; to &#39;survreg1.Rout.save&#39; ... OK
+  Running &#39;survreg2.R&#39;
+  comparing &#39;survreg2.Rout&#39; to &#39;survreg2.Rout.save&#39; ... OK
+  Running &#39;survSplit.R&#39;
+  comparing &#39;survSplit.Rout&#39; to &#39;survSplit.Rout.save&#39; ... OK
+  Running &#39;survtest.R&#39;
+  comparing &#39;survtest.Rout&#39; to &#39;survtest.Rout.save&#39; ... OK
+  Running &#39;testci.R&#39;
+  comparing &#39;testci.Rout&#39; to &#39;testci.Rout.save&#39; ... OK
+  Running &#39;testci2.R&#39;
+  comparing &#39;testci2.Rout&#39; to &#39;testci2.Rout.save&#39; ... OK
+  Running &#39;testnull.R&#39;
+  comparing &#39;testnull.Rout&#39; to &#39;testnull.Rout.save&#39; ... OK
+  Running &#39;testreg.R&#39;
+  comparing &#39;testreg.Rout&#39; to &#39;testreg.Rout.save&#39; ... OK
+  Running &#39;tiedtime.R&#39;
+  comparing &#39;tiedtime.Rout&#39; to &#39;tiedtime.Rout.save&#39; ... OK
+  Running &#39;tmerge.R&#39;
+  comparing &#39;tmerge.Rout&#39; to &#39;tmerge.Rout.save&#39; ... OK
+  Running &#39;tmerge2.R&#39;
+  comparing &#39;tmerge2.Rout&#39; to &#39;tmerge2.Rout.save&#39; ... OK
+  Running &#39;tmerge3.R&#39;
+  comparing &#39;tmerge3.Rout&#39; to &#39;tmerge3.Rout.save&#39; ... OK
+  Running &#39;tt.R&#39;
+  comparing &#39;tt.Rout&#39; to &#39;tt.Rout.save&#39; ... OK
+  Running &#39;tt2.R&#39;
+  comparing &#39;tt2.Rout&#39; to &#39;tt2.Rout.save&#39; ... OK
+  Running &#39;turnbull.R&#39;
+  comparing &#39;turnbull.Rout&#39; to &#39;turnbull.Rout.save&#39; ... OK
+  Running &#39;update.R&#39;
+  comparing &#39;update.Rout&#39; to &#39;update.Rout.save&#39; ... OK
+  Running &#39;yates0.R&#39;
+  comparing &#39;yates0.Rout&#39; to &#39;yates0.Rout.save&#39; ... OK
+  Running &#39;yates1.R&#39;
+  comparing &#39;yates1.Rout&#39; to &#39;yates1.Rout.save&#39; ... OK
+  Running &#39;yates2.R&#39;
+  Running &#39;zph.R&#39;
+  comparing &#39;zph.Rout&#39; to &#39;zph.Rout.save&#39; ... OK
+Running specific tests for package &#39;boot&#39;
+  Running &#39;parallel-censboot.R&#39;
+Running specific tests for package &#39;cluster&#39;
+  Running &#39;agnes-ex.R&#39;
+  comparing &#39;agnes-ex.Rout&#39; to &#39;agnes-ex.Rout.save&#39; ... OK
+  Running &#39;clara-ex.R&#39;
+  comparing &#39;clara-ex.Rout&#39; to &#39;clara-ex.Rout.save&#39; ... OK
+  Running &#39;clara-gower.R&#39;
+  Running &#39;clara-NAs.R&#39;
+  comparing &#39;clara-NAs.Rout&#39; to &#39;clara-NAs.Rout.save&#39; ... OK
+  Running &#39;clara.R&#39;
+  comparing &#39;clara.Rout&#39; to &#39;clara.Rout.save&#39; ... OK
+  Running &#39;clusplot-out.R&#39;
+  comparing &#39;clusplot-out.Rout&#39; to &#39;clusplot-out.Rout.save&#39; ... OK
+  Running &#39;daisy-ex.R&#39;
+  comparing &#39;daisy-ex.Rout&#39; to &#39;daisy-ex.Rout.save&#39; ... OK
+  Running &#39;diana-boots.R&#39;
+  Running &#39;diana-ex.R&#39;
+  comparing &#39;diana-ex.Rout&#39; to &#39;diana-ex.Rout.save&#39; ... OK
+  Running &#39;ellipsoid-ex.R&#39;
+  comparing &#39;ellipsoid-ex.Rout&#39; to &#39;ellipsoid-ex.Rout.save&#39; ... OK
+  Running &#39;fanny-ex.R&#39;
+  comparing &#39;fanny-ex.Rout&#39; to &#39;fanny-ex.Rout.save&#39; ... OK
+  Running &#39;mona.R&#39;
+  comparing &#39;mona.Rout&#39; to &#39;mona.Rout.save&#39; ... OK
+  Running &#39;pam.R&#39;
+  comparing &#39;pam.Rout&#39; to &#39;pam.Rout.save&#39; ... OK
+  Running &#39;silhouette-default.R&#39;
+  comparing &#39;silhouette-default.Rout&#39; to &#39;silhouette-default.Rout.save&#39; ... OK
+  Running &#39;sweep-ex.R&#39;
+Running specific tests for package &#39;codetools&#39;
+  Running &#39;tests.R&#39;
+Running specific tests for package &#39;foreign&#39;
+  Running &#39;arff.R&#39;
+  comparing &#39;arff.Rout&#39; to &#39;arff.Rout.save&#39; ... OK
+  Running &#39;download.R&#39;
+  Running &#39;minitab.R&#39;
+  comparing &#39;minitab.Rout&#39; to &#39;minitab.Rout.save&#39; ... OK
+  Running &#39;mval_bug.R&#39;
+  comparing &#39;mval_bug.Rout&#39; to &#39;mval_bug.Rout.save&#39; ... OK
+  Running &#39;octave.R&#39;
+  comparing &#39;octave.Rout&#39; to &#39;octave.Rout.save&#39; ... OK
+  Running &#39;S3.R&#39;
+  comparing &#39;S3.Rout&#39; to &#39;S3.Rout.save&#39; ... OK
+  Running &#39;sas.R&#39;
+  Running &#39;spss.R&#39;
+  comparing &#39;spss.Rout&#39; to &#39;spss.Rout.save&#39; ... OK
+  Running &#39;stata.R&#39;
+  comparing &#39;stata.Rout&#39; to &#39;stata.Rout.save&#39; ... OK
+  Running &#39;testEmpty.R&#39;
+  comparing &#39;testEmpty.Rout&#39; to &#39;testEmpty.Rout.save&#39; ... OK
+  Running &#39;writeForeignSPSS.R&#39;
+  comparing &#39;writeForeignSPSS.Rout&#39; to &#39;writeForeignSPSS.Rout.save&#39; ... OK
+  Running &#39;xport.R&#39;
+  comparing &#39;xport.Rout&#39; to &#39;xport.Rout.save&#39; ... OK
+Running specific tests for package &#39;KernSmooth&#39;
+  Running &#39;bkfe.R&#39;
+  Running &#39;locpoly.R&#39;
+Running specific tests for package &#39;rpart&#39;
+  Running &#39;backticks.R&#39;
+  comparing &#39;backticks.Rout&#39; to &#39;backticks.Rout.save&#39; ... OK
+  Running &#39;cost.R&#39;
+  comparing &#39;cost.Rout&#39; to &#39;cost.Rout.save&#39; ... OK
+  Running &#39;cptest.R&#39;
+  comparing &#39;cptest.Rout&#39; to &#39;cptest.Rout.save&#39; ... OK
+  Running &#39;minus_in_formula.R&#39;
+  comparing &#39;minus_in_formula.Rout&#39; to &#39;minus_in_formula.Rout.save&#39; ... OK
+  Running &#39;priors.R&#39;
+  comparing &#39;priors.Rout&#39; to &#39;priors.Rout.save&#39; ... OK
+  Running &#39;rescale.R&#39;
+  comparing &#39;rescale.Rout&#39; to &#39;rescale.Rout.save&#39; ... OK
+  Running &#39;testall.R&#39;
+  comparing &#39;testall.Rout&#39; to &#39;testall.Rout.save&#39; ... OK
+  Running &#39;treble.R&#39;
+  comparing &#39;treble.Rout&#39; to &#39;treble.Rout.save&#39; ... OK
+  Running &#39;treble2.R&#39;
+  comparing &#39;treble2.Rout&#39; to &#39;treble2.Rout.save&#39; ... OK
+  Running &#39;treble3.R&#39;
+  comparing &#39;treble3.Rout&#39; to &#39;treble3.Rout.save&#39; ... OK
+  Running &#39;treble4.R&#39;
+  comparing &#39;treble4.Rout&#39; to &#39;treble4.Rout.save&#39; ... OK
+  Running &#39;usersplits.R&#39;
+  comparing &#39;usersplits.Rout&#39; to &#39;usersplits.Rout.save&#39; ... OK
+  Running &#39;xpred1.R&#39;
+  comparing &#39;xpred1.Rout&#39; to &#39;xpred1.Rout.save&#39; ... OK
+  Running &#39;xpred2.R&#39;
+  comparing &#39;xpred2.Rout&#39; to &#39;xpred2.Rout.save&#39; ... OK
+Running specific tests for package &#39;spatial&#39;
+
+
+Test suite result: PASS</code></pre>
+<p>The final line of the above output displays the status of running the
+above tests. <code>PASS</code> indicates a successful running of the
+tests, a <code>FAIL</code> would indicate that an error was detected
+during the running of the tests.</p>
+<p>There may be some tests where the result of performing a
+<code>diff</code> on two files that were being compared demonstrate a
+content difference that may or may not be relevant and may be dependent
+upon locale settings. Any such differences displayed in the above output
+should be reviewed in detail to determine their relevance to the
+Operational Qualification of this R installation.</p>
+</div>
+</div>
+<div id="summary-of-findings" class="section level3">
+<h3>Summary of Findings</h3>
+<p>The final page of the report will include a table with the summary of
+findings from the above tests, including the overall status of the
+Installation Qualification and Operational Qualification of this R
+installation. The overall status is determined by the presence of any
+<code>FAIL</code> results in the above tests, which would indicate a
+failure in the qualification of this R installation.</p>
+<p>Please see <a href="https://medtronic-biostatistics.github.io/rqualify/index.html" class="uri">https://medtronic-biostatistics.github.io/rqualify/index.html</a>
+for the full documentation and an example of a successful report.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
