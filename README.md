@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/Medtronic-Biostatistics/rqualify/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Medtronic-Biostatistics/rqualify/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/Medtronic-Biostatistics/rqualify/graph/badge.svg)](https://app.codecov.io/gh/Medtronic-Biostatistics/rqualify)
+[![R-CMD-check](https://github.com/Medtronic-Biostatistics/rqualify/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Medtronic-Biostatistics/rqualify/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/Medtronic-Biostatistics/rqualify/graph/badge.svg)](https://app.codecov.io/gh/Medtronic-Biostatistics/rqualify) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/rqualify)](https://cran.r-project.org/package=rqualify) [![](http://cranlogs.r-pkg.org/badges/rqualify)](https://CRAN.R-project.org/package=rqualify) [![](https://cranlogs.r-pkg.org/badges/grand-total/rqualify)](https://CRAN.R-project.org/package=rqualify) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19617153.svg)](https://doi.org/10.5281/zenodo.19617153)
 
 <!-- badges: end -->
 
@@ -53,8 +53,18 @@ library(rqualify)
 rqualify(path_save = tempdir())
 ```
 
+Another alternative is to use Quarto, especially if you want to execute the validation process from within RStudio:
+
+```         
+library(rqualify)
+rqualify(path_save     = tempdir(),
+         setup_tinytex = FALSE,
+         setup_pandoc  = FALSE,
+         engine        = "quarto")
+```
+
 In any case, ensure that the `path_save` location does not already include a folder named `R-validation`. See `?rqualify` for more info.
 
 ## Special Thanks
 
-We would like to thank [Marc Schwartz](https://msbiostats.com/) for allowing us to modify [R-IQ-OQ](https://github.com/marcschwartz/R-IQ-OQ) into the RMarkdown file made available by this package. As the original code was released under the GNU GPL version 2 license, we are adhering to the licensing and releasing this package under GNU GPL version 2 as well.
+We would like to thank [Marc Schwartz](https://github.com/marcschwartz/) for allowing us to modify [R-IQ-OQ](https://github.com/marcschwartz/R-IQ-OQ) into the RMarkdown file made available by this package. As the original code was released under the GNU GPL version 2 license, we are adhering to the licensing and releasing this package under GNU GPL version 2 as well.

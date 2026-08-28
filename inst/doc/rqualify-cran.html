@@ -348,7 +348,11 @@ file, showing what code is executed when the file is rendered. This
 overview is for informational purposes and documents the internal
 structure of the <code>R-validation.Rmd</code> file. If any of the code
 blocks are updated, this is not considered a breaking change as the
-document will still render properly.</p>
+document will still render properly. For Quarto users,
+<code>R-validation</code> is the source file for the
+<code>R-validation.qmd</code> file, and any changes to the
+<code>R-validation.Rmd</code> file will be reflected in
+<code>R-validation.qmd</code>.</p>
 <p>Please see <a href="https://medtronic-biostatistics.github.io/rqualify/index.html" class="uri">https://medtronic-biostatistics.github.io/rqualify/index.html</a>
 for the full documentation. Here is a minimal usage example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(rqualify)</span>
@@ -377,7 +381,7 @@ the report with details about the R installation being qualified.</p>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Version      <span class="ot">&lt;-</span> RVersionInfo<span class="sc">$</span>version.string</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>Arch         <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;_&quot;</span>, <span class="st">&quot; &quot;</span>, RVersionInfo<span class="sc">$</span>arch)</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>Platform     <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;_&quot;</span>, <span class="st">&quot; &quot;</span>, RVersionInfo<span class="sc">$</span>platform)</span></code></pre></div>
-<pre><code>R Version: R version 4.5.1 (2025-06-13 ucrt)
+<pre><code>R Version: R version 4.6.1 (2026-06-24 ucrt)
 
 Architecture: x86 64
 
@@ -386,7 +390,7 @@ Platform: x86 64-w64-mingw32</code></pre>
 <p>The following is the output of <code>R.home()</code>, showing where R
 was installed on this computer:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>r_home <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">R.home</span>(), <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>C:/R/R-45~1.1</code></pre>
+<pre><code>C:/R/R-46~1.1</code></pre>
 <hr />
 <p>The following is the output of <code>system(&quot;R -e &#39;q()&#39;&quot;)</code>,
 presenting the R welcome banner as displayed from a default R console
@@ -401,13 +405,15 @@ presenting the R welcome banner as displayed from a default R console
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  results0 <span class="ot">&lt;-</span> <span class="st">&quot;Unable to execute R at the command line&quot;</span></span>
 <span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>
-R version 4.5.1 (2025-06-13 ucrt) -- &quot;Great Square Root&quot;
-Copyright (C) 2025 The R Foundation for Statistical Computing
+R version 4.6.1 (2026-06-24 ucrt) -- &quot;Happy Hop&quot;
+Copyright (C) 2026 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type &#39;contributors()&#39; for more information and
@@ -494,14 +500,14 @@ crt            ucrt
 system         x86_64, mingw32                  
 status                                          
 major          4                                
-minor          5.1                              
-year           2025                             
+minor          6.1                              
+year           2026                             
 month          06                               
-day            13                               
-svn rev        88306                            
+day            24                               
+svn rev        90187                            
 language       R                                
-version.string R version 4.5.1 (2025-06-13 ucrt)
-nickname       Great Square Root                </code></pre>
+version.string R version 4.6.1 (2026-06-24 ucrt)
+nickname       Happy Hop                        </code></pre>
 <hr />
 <p>The following is the output of <code>.Machine</code>, defining the
 numerical characteristics of the computer upon which R is running:</p>
@@ -616,7 +622,7 @@ current R version, locale information and attached packages:</p>
 <span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_sessioninfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
 <span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  results_sessioninfo_clean <span class="ot">&lt;-</span> results_sessioninfo_clean[<span class="sc">-</span><span class="fu">which</span>(results_sessioninfo_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
 <span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>R version 4.5.1 (2025-06-13 ucrt)
+<pre><code>R version 4.6.1 (2026-06-24 ucrt)
 Platform: x86_64-w64-mingw32/x64
 Running under: Windows 11 x64 (build 26200)
 
@@ -637,7 +643,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
-[1] compiler_4.5.1</code></pre>
+[1] compiler_4.6.1</code></pre>
 <hr />
 <p>The following is the output of <code>.libPaths()</code>, the current
 package library location; may be more than one folder:</p>
@@ -651,9 +657,9 @@ package library location; may be more than one folder:</p>
 <span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">any</span>(results_libpath_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)){</span>
 <span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>  results_libpath_clean <span class="ot">&lt;-</span> results_libpath_clean[<span class="sc">-</span><span class="fu">which</span>(results_libpath_clean <span class="sc">==</span> <span class="st">&quot;&gt; &quot;</span>)]</span>
 <span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>[1] &quot;C:/Users/musgrd1/AppData/Local/Temp/RtmpYhwxr3/Rinst2f74556a62a0&quot;      
-[2] &quot;C:/Users/musgrd1/AppData/Local/Temp/Rtmpecwoal/temp_libpath558830867fa&quot;
-[3] &quot;C:/R/R-4.5.1/library&quot;                                                  </code></pre>
+<pre><code>[1] &quot;C:/Users/musgrd1/AppData/Local/Temp/Rtmp2JMvG8/Rinst34a02ba32222&quot;      
+[2] &quot;C:/Users/musgrd1/AppData/Local/Temp/RtmpK44feB/temp_libpathc0c37913cce&quot;
+[3] &quot;C:/R/R-4.6.1/library&quot;                                                  </code></pre>
 <hr />
 <p>The following is the output of
 <code>rmarkdown::pandoc_version()</code> listing the version of Pandoc
@@ -673,7 +679,7 @@ will indicate that Pandoc is not available):</p>
 <span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>} <span class="cf">else</span>{</span>
 <span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>  results_pandoc_ver_clean <span class="ot">&lt;-</span> <span class="st">&quot;Pandoc not available&quot;</span></span>
 <span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>[1] &#39;3.6.3&#39;</code></pre>
+<pre><code>[1] &#39;3.8.3&#39;</code></pre>
 <hr />
 <p>The following is the output of <code>tinytex::tlmgr_version()</code>
 listing the version and installation path of TinyTex used to render the
@@ -693,7 +699,7 @@ indicate that TinyTeX is not available):</p>
 <span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>} <span class="cf">else</span>{</span>
 <span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>  results_tinytex_ver_clean <span class="ot">&lt;-</span> <span class="st">&quot;TinyTeX not available&quot;</span></span>
 <span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>tlmgr revision 78301 (2026-03-07 18:41:28 +0100)
+<pre><code>tlmgr revision 79639 (2026-07-10 18:45:34 +0200)
 tlmgr using installation: C:/Users/musgrd1/AppData/Roaming/TinyTeX
 TeX Live (https://tug.org/texlive) version 2026</code></pre>
 <hr />
