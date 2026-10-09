@@ -9,32 +9,7 @@
 
 ## ----codeexec, echo=FALSE, message=FALSE--------------------------------------
 
-# Helper function for running code at the command line
-code_exec <- function(code_block, file_prefix, folder_output){
-  
-  # Set code file name
-  file_code <- file.path(folder_output, paste0(file_prefix, ".R"))
-  
-  # Write code_block to R file
-  fileConn <- file(file_code)
-  writeLines(code_block, fileConn)
-  close(fileConn)
-  
-  # Set output file name
-  file_output <- file.path(folder_output, paste0(file_prefix, "Out.txt"))
-  
-  # Command to run @ command line
-  cmd <- paste(shQuote(file.path(R.home("bin"), "R")),
-               "CMD BATCH --vanilla --no-timing", 
-               shQuote(file_code), 
-               shQuote(file_output))
-  
-  # Run the command
-  run <- try(system(cmd))
-  
-  # Load results and return
-  readLines(file.path(folder_output, paste0(file_prefix, "Out.txt")))
-}
+code_exec <- rqualify:::validation_output
 
 # Define tempdir()
 dir_temp <- file.path(tempdir(), "IQ-OQ-TestOutput")
@@ -56,15 +31,8 @@ r_home <- paste0(R.home(), sep="\n")
 cat(paste0(r_home, collapse = "\n"))
 
 ## ----rbanner------------------------------------------------------------------
-# Output the R startup banner
-results0 <- try(system(paste(shQuote(file.path(R.home("bin"), "R")), "-e", shQuote("q()")), intern = TRUE))
-
-if (class(results0) != "try-error"){
-  results0 <- paste(results0, collapse = "\n")
-  results0 <- gsub("> q\\(\\)", "", results0)
-} else{
-  results0 <- "Unable to execute R at the command line"
-}
+iq_run <- rqualify:::run_validation_suite("iq", dir_temp)
+results0 <- paste(iq_run$output, collapse = "\n")
 
 ## ----echo=FALSE, results="asis"-----------------------------------------------
 cat(results0)
@@ -203,170 +171,49 @@ if(tinytex::is_tinytex()){
 cat(paste0(results_tinytex_ver_clean, collapse = "\n"))
 
 ## ----oq1, eval=FALSE----------------------------------------------------------
-# 
-# # Copy system tests to IQ-OQ-TestOutput/tests
-# r_test_path <- file.path(R.home(), "tests")
-# fc          <- file.copy(r_test_path, "IQ-OQ-TestOutput", recursive=TRUE)
-# 
-# # Set absolute test path
-# path_system_tests <- normalizePath("IQ-OQ-TestOutput/tests", winslash="/")
-# 
-# code_check1 <- sprintf('
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# 
-# Failure <- tryCatch(tools:::testInstalledBasic(
-#                     scope      = "basic",
-#                     outDir     = "%s",
-#                     testSrcdir = "%s"
-#                     ),
-#                     error=function(e) TRUE)
-# 
-# if (Failure){
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile1Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# ',path_system_tests,path_system_tests)
-# 
-# results1 <- code_exec(code_block    = code_check1,
-#                       file_prefix   = "CMDFile1",
-#                       folder_output = "IQ-OQ-TestOutput")
-# 
+# results1 <- rqualify:::run_validation_suite("basic", "IQ-OQ-TestOutput")
 
 ## ----oq1read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile1Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq2, eval=FALSE----------------------------------------------------------
-# code_check2 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "base", types = "examples", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure) {
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile2Fail")
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results2 <- code_exec(code_block    = code_check2,
-#                       file_prefix   = "CMDFile2",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results2 <- rqualify:::run_validation_suite("base_examples", "IQ-OQ-TestOutput")
 
 ## ----oq2read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile2Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq3, eval=FALSE----------------------------------------------------------
-# code_check3 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "base", types = "vignettes", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure) {
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile3Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results3 <- code_exec(code_block    = code_check3,
-#                       file_prefix   = "CMDFile3",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results3 <- rqualify:::run_validation_suite("base_vignettes", "IQ-OQ-TestOutput")
 
 ## ----oq3read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile3Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq4, eval=FALSE----------------------------------------------------------
-# code_check4 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "recommended", types = "examples", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure){
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile4Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results4 <- code_exec(code_block    = code_check4,
-#                       file_prefix   = "CMDFile4",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results4 <- rqualify:::run_validation_suite("recommended_examples", "IQ-OQ-TestOutput")
 
 ## ----oq4read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile4Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq5, eval=FALSE----------------------------------------------------------
-# code_check5 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "recommended", types = "vignettes", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure){
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile5Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results5 <- code_exec(code_block    = code_check5,
-#                       file_prefix   = "CMDFile5",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results5 <- rqualify:::run_validation_suite("recommended_vignettes", "IQ-OQ-TestOutput")
 
 ## ----oq5read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile5Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq6, eval=FALSE----------------------------------------------------------
-# code_check6 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "base", types = "tests", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure){
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile6Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results6 <- code_exec(code_block    = code_check6,
-#                       file_prefix   = "CMDFile6",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results6 <- rqualify:::run_validation_suite("base_tests", "IQ-OQ-TestOutput")
 
 ## ----oq6read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile6Out.txt", package="rqualify")), 
            collapse = "\n"))
 
 ## ----oq7, eval=FALSE----------------------------------------------------------
-# code_check7 <- '
-# options(echo = FALSE)
-# options(useFancyQuotes = FALSE)
-# Failure <- tryCatch(tools:::testInstalledPackages(outDir = "IQ-OQ-TestOutput", scope = "recommended", types = "tests", errorsAreFatal = FALSE),
-#                     error=function(e) TRUE)
-# if (Failure){
-#   cat("\n\nTest suite result: FAIL\n\n")
-#   fc <- file.create("IQ-OQ-TestOutput/CMDFile7Fail", showWarnings = FALSE)
-# } else {
-#   cat("\n\nTest suite result: PASS\n\n")
-# }
-# q(status = Failure)
-# '
-# results7 <- code_exec(code_block    = code_check7,
-#                       file_prefix   = "CMDFile7",
-#                       folder_output = "IQ-OQ-TestOutput")
+# results7 <- rqualify:::run_validation_suite("recommended_tests", "IQ-OQ-TestOutput")
 
 ## ----oq7read, echo=FALSE, results="asis"--------------------------------------
 cat(paste0(readLines(system.file("qualify_r/example_success/CMDFile7Out.txt", package="rqualify")), 
